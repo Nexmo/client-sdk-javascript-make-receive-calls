@@ -1,0 +1,73 @@
+<html>
+
+<head>
+  <title>Make & Receive Calls</title>
+  <script src="./node_modules/nexmo-client/dist/conversationClient.js"></script>
+</head>
+
+<body>
+  <p id="notification"></p>
+  <button type="button" id="login-jane">Login as Jane</button>
+  <button type="button" id="login-joe">Login as Joe</button>
+  <hr>
+  <button type="button" id="call">Call</button>
+  <hr>
+  <button type="button" id="answer">Answer</button>
+  <button type="button" id="reject">Reject</button>
+  <button type="button" id="hangup">Hang Up</button>
+  <script>
+    const JANE_JWT = "JANE USER JWT";
+    const JOE_JWT = "JOE USER JWT";
+
+    let notification = document.getElementById("notification");
+    let app;
+
+    var loginHandler = (jwt) => {
+      new ConversationClient()
+        .login(jwt).then(application => {
+          notification.textContent = `You've logged in with the user ${application.me.name}`;
+          app = application;
+
+          application.on("member:call", (member, call) => {
+            notification.textContent = `You're receiving a call`;
+            document.getElementById("answer").addEventListener("click", () => {
+              call.answer();
+              notification.textContent = `You're in a call`;
+            })
+            document.getElementById("reject").addEventListener("click", () => {
+              call.reject();
+              notification.textContent = `You rejected the call`;
+            })
+            document.getElementById("hangup").addEventListener("click", () => {
+              call.hangUp();
+              notification.textContent = "The call has ended";
+            })
+          });
+
+          // TODO: Remove this workaround when the Nexmo Client SDK fixes member:call events for caller
+          application.on("member:joined", (member, event) => {
+            notification.textContent = `You're in a call`;
+            document.getElementById("hangup").addEventListener("click", () => {
+              event.conversation.leave();
+              notification.textContent = "The call has ended";
+            })
+          });
+        })
+        .catch(console.log);
+    }
+
+    document.getElementById("login-jane").addEventListener("click", () => loginHandler(JANE_JWT))
+
+    document.getElementById("login-joe").addEventListener("click", () => loginHandler(JOE_JWT))
+
+    document.getElementById("call").addEventListener("click", () => {
+      if (app.me.name == "Jane") {
+        app.call(["Joe"])
+      } else {
+        app.call(["Jane"])
+      }
+    })
+  </script>
+</body>
+
+</html>
