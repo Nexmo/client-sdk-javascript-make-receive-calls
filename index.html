@@ -2,7 +2,7 @@
 
 <head>
   <title>Make & Receive Calls</title>
-  <script src="./node_modules/nexmo-client/dist/conversationClient.js"></script>
+  <script src="./node_modules/nexmo-client/dist/nexmoClient.js"></script>
 </head>
 
 <body>
@@ -23,7 +23,7 @@
     let app;
 
     var loginHandler = (jwt) => {
-      new ConversationClient()
+      new NexmoClient({ debug: true })
         .createSession(jwt).then(application => {
           notification.textContent = `You've logged in with the user ${application.me.name}`;
           app = application;
