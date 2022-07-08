@@ -24,7 +24,7 @@
 
     var loginHandler = (jwt) => {
       new ConversationClient()
-        .login(jwt).then(application => {
+        .createSession(jwt).then(application => {
           notification.textContent = `You've logged in with the user ${application.me.name}`;
           app = application;
 
