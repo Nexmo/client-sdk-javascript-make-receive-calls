@@ -22,7 +22,7 @@
     let notification = document.getElementById("notification");
     let app;
 
-    var loginHandler = (jwt) => {
+    const loginHandler = (jwt) => {
       new NexmoClient({ debug: true })
         .createSession(jwt).then(application => {
           notification.textContent = `You've logged in with the user ${application.me.name}`;
