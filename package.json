@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Nexmo/client-sdk-javascript-make-receive-calls#readme",
   "dependencies": {
-    "nexmo-client": "^9.0.0"
+    "nexmo-client": "^9.1.5"
   }
 }
